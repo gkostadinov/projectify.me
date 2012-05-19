@@ -1,0 +1,47 @@
+
+{% load i18n %}
+
+	<div class="span7 login">
+		{% if response != None %}
+		<div class="alert alert-error">
+			{{ response }}
+		</div>
+		{% endif %}
+		
+		<div class="hero-unit">
+			<h2> {% trans "Login" %} </h2>
+			
+			<form action="{% url login-page %}" class="form-horizontal" method="post">
+				<fieldset>
+					{% csrf_token %}
+					<input type="hidden" name="redirect_url" value="{{ redirect_url }}" />
+
+					<div class="control-group">
+						<label class="control-label" for="user_email">{% trans "Email" %}:</label>
+
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="user_email" name="user_email">
+							
+							<span class="help-inline" id="user_email"></span>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="password">{% trans "Password" %}:</label>
+
+						<div class="controls">
+							<input type="password" class="input-xlarge" id="password" name="password">
+							
+							<span class="help-inline" id="password"></span>
+						</div>
+					</div>
+					
+					<div class="form-actions">
+						<input type="submit" class="btn btn-primary" value="{% trans "Login" %}">
+						&nbsp;
+						<input type="reset" class="btn" value="{% trans "Cancel" %}">
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>

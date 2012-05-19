@@ -19,6 +19,11 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = (
+    'projectify.userprofile.backends.EmailAuthBackend',
+    'django.contrib.auth.backends.ModelBackend'
+)
+
 SITE_ID = "4fb76a2b7331870a40000000"
 
 # Local time zone for this installation. Choices can be found here:
@@ -67,6 +72,7 @@ STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
@@ -111,6 +117,7 @@ ROOT_URLCONF = 'projectify.urls'
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'chat/templates'),
+    os.path.join(SITE_ROOT, 'userprofile/templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -124,6 +131,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chat',
+    'userprofile',
     
     #'emailconfirmation',
     #'uni_form',

@@ -50,15 +50,11 @@ APE.chatboxListen = DUI.Class.create(APE.Client.prototype, {
     {
         msg = $.parseJSON(decodeURIComponent(raw.data.msg));
 
-        if (msg.to.id == this.options.user.id)
+        //if (msg.to.id == this.options.user.id)
         {
             if (typeof msg.userIsWriting !== 'undefined')
             {
                 Chat.changeStatus(msg);
-            }
-            else
-            {
-                Chat.initChatbox(msg.from, true, msg);
             }
         }
     },
@@ -79,7 +75,6 @@ APE.chatbox = DUI.Class.create(APE.Client.prototype, {
         container: $('#chatboxes'),
         channel: 'chatbox',
         user: null,
-        userTo: null,
         chatTitle: null,
         listener: null
     },  
@@ -131,7 +126,7 @@ APE.chatbox = DUI.Class.create(APE.Client.prototype, {
             .addClass('close')
             .html('&times;')
             .click(function() {
-                $(this).parent().parent().addClass('hidden').hide();
+                /*$(this).parent().parent().addClass('hidden').hide();
 
                 var j = 0;
                 while (j < Chat.usersCount) {
@@ -142,7 +137,7 @@ APE.chatbox = DUI.Class.create(APE.Client.prototype, {
                         Chat.usersCount--;
                     }
                     else j++;
-                }
+                }*/
             })
             .appendTo(chatboxTop);
 
@@ -153,7 +148,7 @@ APE.chatbox = DUI.Class.create(APE.Client.prototype, {
             });
 
         var writingStatus = $('<div></div>')
-            .addClass('writing-status_' + this.options.userTo.id);
+            .addClass('writing-status');
 
         var chatboxBottom = $('<div></div>').addClass('bottom');
         var input = $('<input>')
@@ -189,8 +184,7 @@ APE.chatbox = DUI.Class.create(APE.Client.prototype, {
                     var message = {
                         "text": decodeURIComponent(value),
                         "user": core_user,
-                        "from": that.options.user,
-                        "to": that.options.userTo
+                        "from": that.options.user
                     }
                     message = JSON.stringify(message);
 
@@ -206,8 +200,7 @@ APE.chatbox = DUI.Class.create(APE.Client.prototype, {
                     var writingStatus = {
                         "userIsWriting": that.userIsWriting,
                         "user": core_user,
-                        "from": that.options.user,
-                        "to": that.options.userTo
+                        "from": that.options.user
                     }
                     writingStatus = JSON.stringify(writingStatus);
                     that.options.listener.getCurrentPipe().send(writingStatus);
@@ -286,70 +279,71 @@ APE.chatbox = DUI.Class.create(APE.Client.prototype, {
     {
         msg = $.parseJSON(decodeURIComponent(msg));
 
-        if ((msg.to.id == this.options.user.id && msg.from.id == this.options.userTo.id)
-            || from.properties.name == this.core.user.properties.name)
+        //if ((msg.to.id == this.options.user.id && msg.from.id == this.options.userTo.id)
+        //    || from.properties.name == this.core.user.properties.name)
 
+        //{
+        msg.text = $('<div></div>').text(msg.text).html();
+        msg.text = this.parseMsg(msg.text);
+        console.log(from.properties.name)
+        if (from.properties.name == this.lastUser)
         {
-            msg.text = $('<div></div>').text(msg.text).html();
-            msg.text = this.parseMsg(msg.text);
+            this.options.chatboxElement.find('.messages .text').last().append('<br>' + msg.text);
+        }
+        else
+        {
+            this.lastUser = from.properties.name;
 
-            if (from.properties.name == this.lastUser)
+            var message = $('<div></div>').addClass('message');
+
+            if (from.properties.name == this.core.user.properties.name) message.addClass('right');
+            else message.addClass('left');
+
+            var avatar = $('<div></div>').addClass('avatar');
+            var avatarImg = $('<img>')
+                .attr('src', 'http://placehold.it/50x50')
+                .attr('alt', 'avatar')
+                .appendTo(avatar);
+
+            avatar.appendTo(message);
+
+            var text = $('<div></div>')
+                .addClass('text')
+                .html(msg.text)
+                .appendTo(message);
+
+            this.options.chatboxElement.find('.messages').append(message);
+
+            var isHidden = this.options.chatboxElement.hasClass('hidden');
+            if (isHidden) this.options.chatboxElement.removeClass('hidden').show();
+        }
+        /*
+        if (from.properties.name != this.core.user.properties.name)
+        {
+            Nibiru.bubbleSound.load();
+            Nibiru.bubbleSound.play();
+            
+            if (window.webkitNotifications 
+                && document.hasFocus)
             {
-                this.options.chatboxElement.find('.messages .text').last().append('<br>' + msg.text);
-            }
-            else
-            {
-                this.lastUser = from.properties.name;
-
-                var message = $('<div></div>').addClass('message');
-
-                if (from.properties.name == this.core.user.properties.name) message.addClass('right');
-                else message.addClass('left');
-
-                var avatar = $('<div></div>').addClass('avatar');
-                var avatarImg = $('<img>')
-                    .attr('src', msg.from.avatar)
-                    .attr('alt', 'avatar')
-                    .appendTo(avatar);
-
-                avatar.appendTo(message);
-
-                var text = $('<div></div>')
-                    .addClass('text')
-                    .html(msg.text)
-                    .appendTo(message);
-
-                this.options.chatboxElement.find('.messages').append(message);
-
-                var isHidden = this.options.chatboxElement.hasClass('hidden');
-                if (isHidden) this.options.chatboxElement.removeClass('hidden').show();
-            }
-
-            if (from.properties.name != this.core.user.properties.name)
-            {
-                Nibiru.bubbleSound.load();
-                Nibiru.bubbleSound.play();
-                
-                if (window.webkitNotifications 
-                    && document.hasFocus)
+                if (window.webkitNotifications.checkPermission() == 0
+                    && !document.hasFocus())
                 {
-                    if (window.webkitNotifications.checkPermission() == 0
-                        && !document.hasFocus())
-                    {
-                        var notificationContent = $("<div></div>").html(msg.text).text();
-                        var desktopNotification = window
-                            .webkitNotifications
-                            .createNotification(msg.from.avatar, 'From: ' + decodeURIComponent(msg.from.name) + ' on intrest.in', notificationContent);
-                            
-                        desktopNotification.show();
+                    var notificationContent = $("<div></div>").html(msg.text).text();
+                    var desktopNotification = window
+                        .webkitNotifications
+                        .createNotification(msg.from.avatar, 'From: ' + decodeURIComponent(msg.from.name) + ' on intrest.in', notificationContent);
+                        
+                    desktopNotification.show();
 
-                        setTimeout(function() {
-                            desktopNotification.cancel()
-                        }, 5000)
-                    }
+                    setTimeout(function() {
+                        desktopNotification.cancel()
+                    }, 5000)
                 }
             }
         }
+        */
+        //}
 
         this.options.chatboxElement.find('.messages').animate({ scrollTop: 60000 }, 0);
     },
@@ -360,7 +354,7 @@ APE.chatbox = DUI.Class.create(APE.Client.prototype, {
     },
 });
 
-NibiruCore.prototype.Chat = (function ()
+var Chat = (function() 
 {
     /* Globally defined variables */
     var Chat = this;
@@ -369,9 +363,6 @@ NibiruCore.prototype.Chat = (function ()
     var chatboxListener = null;
 
     this.user = null;
-    this.loaded = false;
-    this.users = [];
-    this.usersCount = 0;
     
     this.initListener = function(user)
     {
@@ -385,69 +376,24 @@ NibiruCore.prototype.Chat = (function ()
                     channel: 'chatboxListen',
                     user: Chat.user
                 });
+                Chat.initChatbox();
             }
         });
 
-        $('[class*=avatar]').live('click', function(e) {
-            var className = $(this).attr('class');
-            var userId = className.split('_')[1]
-            var userName = $(this).attr('alt');
-
-            if (typeof userId !== 'undefined'
-                && typeof userName !== 'undefined')
-            {
-                e.preventDefault();
-
-                var user = {
-                    id: userId,
-                    name: userName
-                }
-                Chat.initChatbox(user);
-                return false;
-            }
-        });
     }
 
-    this.initChatbox = function(toUser, notificationSent, message)
+    this.initChatbox = function()
     {
-        if (notificationSent != true) notificationSent = false;
-
-        var exists = false;
-        for (var i=0; i<Chat.usersCount; i++)
-        {
-            if (Chat.users[i] == toUser.id)
-            {
-                exists = true;
-                break;
-            }
-        }
-        if (Chat.loaded && exists) return;
-        if (Chat.usersCount >= 5)
-        {
-            Nibiru.showMessage(gettext('You have reached the chatbox limit. Maximum number of chats allowed: 4'), null, 'error');
-            return;
-        }
-
-        Chat.loaded = true;
-        Chat.users[Chat.usersCount++] = toUser.id;
-
         client.load({
             'identifier': 'chatbox',
             'channel': 'chatbox',
             'complete': function(ape)
             {
-                if (notificationSent == true)
-                {
-                    toUser.from = message.user;
-                    toUser.message = JSON.stringify(message);
-                }
-
                 var chatbox = new APE.chatbox(ape, {
                     container: $('#chatboxes'),
                     channel: 'chatbox',
                     user: Chat.user,
-                    userTo: toUser,
-                    chatTitle: toUser.name,
+                    chatTitle: "Chat",
                     listener: chatboxListener
                 });
             }
@@ -456,9 +402,9 @@ NibiruCore.prototype.Chat = (function ()
 
     this.changeStatus = function(message)
     {
-        var text = (message.userIsWriting) ? decodeURIComponent(message.from.name) + gettext(' is typing.') : '';
-        $('.writing-status_' + message.from.id).html(text);
+        var text = (message.userIsWriting) ? decodeURIComponent(message.from.name) + (' is typing.') : '';
+        $('.writing-status').html(text);
     }
 });
 
-var Chat = new Nibiru.Chat();
+var Chat = new Chat();

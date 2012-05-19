@@ -1,9 +1,25 @@
 <html>
 	<head>
+		<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/main.css" >
 		<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
 		<script type="text/javascript" src="{{ STATIC_URL }}js/plugins/ape.client.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/plugins/jquery.class.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/projectify.chat.js"></script>
+		<script type="text/javascript">
+		$(document).ready( function() {
+			var user = {
+	            id: '{{ user.id }}',
+	            name: encodeURIComponent('{{ user.get_full_name }}')
+	        }
+
+			Chat.initListener(user);
+		});
+	</script>
 	</head>
 	<body>
-
+		{{ user.email }}
+		{{ user.id }}
+		<div id="chatboxes">
+		</div>
 	</body>
 </html>

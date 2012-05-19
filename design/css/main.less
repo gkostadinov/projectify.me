@@ -1,0 +1,55 @@
+@import "bootstrap/bootstrap.less";
+
+body {
+	background-image: url(../images/bg.png);
+}
+
+#tour {
+	height: 23px;
+	color: #333333;
+	text-align: center;
+	padding-top: 5px;
+	overflow: hidden;
+
+	a {
+		color: #527e46;
+		font-weight: bold;
+	}
+}
+
+@max-width: 980px;
+
+#topbar {
+	background: url(../images/topbar.png) repeat-x;
+	height: 65px;
+	padding-top: 6px;
+
+	.inner {
+		width: @max-width;
+		height: 30px;
+		margin: 0 auto;
+
+		ul {
+			list-style: none;
+
+			li {
+				float: left;
+				padding-top: 6px;
+				padding-right: 13px;
+				
+				&.current {
+					a {
+						color: #71beff;
+					}
+				}
+
+				a {
+					color: #fff;
+					font-size: 15px;
+					text-transform: uppercase;
+
+				}
+			}
+		}
+	}
+}
