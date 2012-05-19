@@ -10,9 +10,9 @@ if(navigator.product=="Gecko")e.contentWindow.location.href=e.getAttribute("src"
  * APE JSF Setup
  */
 
-APE.Config.baseUrl = 'http://projectify.me:8000'; //APE JSF 
+APE.Config.baseUrl = 'http://projectifyme.net:8000'; //APE JSF 
 APE.Config.domain = 'auto'; 
-APE.Config.server = 'ape.projectify.me:6969'; //APE server URL
+APE.Config.server = 'ape.projectifyme.net:6969'; //APE server URL
 
 (function(){
 	for (var i = 0; i < arguments.length; i++)

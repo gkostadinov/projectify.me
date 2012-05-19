@@ -28,26 +28,78 @@ body {
 		width: @max-width;
 		height: 30px;
 		margin: 0 auto;
+		padding-top: 8px;
 
-		ul {
-			list-style: none;
+		.topbar-element {
+			float: left;
 
-			li {
-				float: left;
-				padding-top: 6px;
-				padding-right: 13px;
-				
-				&.current {
+			&.logo {
+				width: 202px;
+				height: 32px;
+				background: url(../images/logo.png) no-repeat;
+				margin-right: 19px;
+			}
+
+			ul {
+				list-style: none;
+
+				li {
+					float: left;
+					font-family: 'Open Sans', sans-serif;
+
 					a {
-						color: #71beff;
+						color: #fff;
+						text-transform: uppercase;
 					}
 				}
+			}
 
-				a {
-					color: #fff;
-					font-size: 15px;
-					text-transform: uppercase;
+			&.menu {
+				li {
+					margin-top: 6px;
+					padding-right: 13px;
+					font-weight: 600;
 
+					&.current {
+						a {
+							color: #71beff;
+						}
+					}
+
+					&.separator {
+						background: url(../images/separator.png) repeat-y;
+					}
+
+					a {
+						font-size: 15px;
+					}
+				}
+			}
+
+			&.login {
+				float: right;
+				width: 156px;
+				height: 30px;
+				background-color: #81c567;
+
+				ul {
+					margin: 0 0 9px 17px;
+
+					li {
+						margin-top: 5px;
+
+						&.separator {
+							width: 1px;
+							height: 13px;
+							background-color: #70a860;
+							margin: 8px 11px;
+						}
+
+						a {
+							font-size: 14px;
+							text-shadow: -1px -1px 0 #60934d;
+						}
+					}
 				}
 			}
 		}
