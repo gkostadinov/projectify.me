@@ -67,6 +67,16 @@ STATIC_URL = '/static/'
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "allauth.context_processors.allauth",
+    "allauth.account.context_processors.account"
+)
+
+AUTHENTICATION_BACKENDS = (
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
@@ -115,6 +125,15 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'emailconfirmation',
+    'uni_form',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.twitter',
+    'allauth.openid',
+    'allauth.facebook',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:

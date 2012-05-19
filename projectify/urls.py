@@ -5,6 +5,7 @@ from django.conf.urls.defaults import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
+	(r'^accounts/', include('allauth.urls')))
     # Examples:
     # url(r'^$', 'projectify.views.home', name='home'),
     # url(r'^projectify/', include('projectify.foo.urls')),
