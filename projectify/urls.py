@@ -1,18 +1,9 @@
 from django.conf.urls.defaults import patterns, include, url
-
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from django.views.generic import TemplateView
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = patterns('',
-	(r'^accounts/', include('allauth.urls')),
-    # Examples:
-    # url(r'^$', 'projectify.views.home', name='home'),
-    # url(r'^projectify/', include('projectify.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+	url(r'^chat/', TemplateView.as_view(template_name="chat.html")),
 )
+
+urlpatterns += staticfiles_urlpatterns()
