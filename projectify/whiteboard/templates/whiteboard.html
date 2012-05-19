@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Whiteboard</title>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.whiteboard.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/less-1.3.0.min.js"></script>
+		<style type="text/css">
+			#whiteboard {
+				width: 700px;
+				height: 450px;
+				border: 1px solid #000;
+				margin: 0px auto;
+			}
+
+			#whiteboard .note {
+				width: 150px;
+				height: 150px;
+				background-color: #e8fc3f;
+				color: #493c42;
+				margin: 9px;
+				padding: 9px;
+				position: absolute;
+			}
+
+			#Whiteboard .note p {
+				width: 150px;
+				height: 130px !important;
+				overflow: auto;
+			}
+
+			#whiteboard .note textarea {
+				width: 140px;
+				height: 130px;
+				background: transparent;
+				resize: none;
+				overflow: hidden;
+				border: 0px none;
+				outline: none;
+				box-shadow: none;
+			}
+
+			#whiteboard .note.blue {
+				background-color: #a3e0f2;
+			}
+
+			div.text-element {
+				width: 200px;
+			}
+
+			div.text-element b.close {
+				position: relative;
+				float: right;
+				background-color: #eee;
+				margin-right: -59px;
+				margin-top: -11px;
+			    width: 20px;
+			    line-height: 20px;
+			    text-align: center;
+			    font-size: 10px;
+			    border-radius: 15px;
+			    cursor: pointer;
+			}
+
+			div.text-element b.move {
+				position: relative;
+				float: right;
+				background-color: #eee;
+				margin-right: -45px;
+				margin-top: ;
+			}
+
+			div.text-element textarea {
+				height: 30px;
+				font-size: 18px;
+				color: #000;
+				background: transparent;
+				position: absolute;
+				border: 3px solid #eee;
+			}
+
+			div.text-element input:active {
+
+			}
+		</style>
+		<script type="text/javascript">
+			$(document).ready( function() {
+				var client = new APE.Client(), whiteboardChangeListen = null;
+				client.load({
+		            'identifier': 'chatboxListen',
+		            'channel': 'chatboxListen',
+		            'complete': function(ape)
+		            {
+		                whiteboardChangeListen = new APE.whiteboardChangeListen(ape, {
+		                    channel: 'whiteboardChangeListen'
+		                });
+		            }
+		        });
+				$(".note").draggable({ 
+					containment:"parent", 
+					drag: function(event, ui) 
+					{
+						var uiElement = {
+							position: ui.position,
+							element: this
+						}
+						whiteboardChangeListen.getCurrentPipe().send(JSON.stringify(uiElement));
+					} 
+				});
+
+				$(".new-sticky").on('click', function() {
+					var whiteboard_offset = $("#whiteboard").offset();
+					var offset_top = whiteboard_offset.top + Math.floor(Math.random()*51)
+					console.log(whiteboard_offset.left);
+					console.log(offset_top);
+					var note_template = $('<div class="note"><p> &nbsp; </p></div>').css(
+						{
+							"left" : whiteboard_offset.left + Math.floor(Math.random()*51),
+							"top" : offset_top,
+							"position" : "absolute"
+						}
+					).draggable({ containment:"parent" });
+					$("#whiteboard").append(note_template);
+				});
+
+				$("#whiteboard").dblclick( function(e) {
+					if( $(e.target).attr('id') == 'whiteboard' ) {
+						var textbox = $('<div class="text-element"> <textarea name="text-element"></textarea> <b class="close">x</b> </div>')
+											.css({ "left" : e.pageX, "top" : e.pageY, "position":"absolute" })
+											.draggable({ containment:"parent" });
+						$("#whiteboard").append(textbox);
+					}
+				});
+
+				$("b.close").live('click', function(e) {
+					$(this).parent().hide().remove();
+				});
+
+				$(".new-text").on('click', function(e) {
+					var textbox = $('<div class="text-element"> <textarea name="text-element"></textarea> <b class="close">x</b> </div>')
+									.css({ "left" : $("#dashboard").offset().top + 10, "top" : e.pageY, "position":"absolute" })
+									.draggable({ containment:"parent" });
+				});
+
+				$(".note").find('p').on('dblclick', function(e) {
+					var p_tag = $(this);
+					var sticky_note = $(this).parent();
+
+					var text = $(this).text();
+					var textarea = $('<textarea name="widget_text_num">'+text+'</textarea>');
+					p_tag.text('').hide()
+					sticky_note.prepend(textarea);
+					sticky_note.find('textarea').focus();
+
+					sticky_note.find('textarea').focusout( function(e) {
+						var new_text = $(this).val();
+						$(this).hide().remove();
+						p_tag.text(new_text).show();
+					});
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<button class="new-sticky">Sticky Note</button>
+		<button class="new-text">Add Text</button>
+		<p>Just a simple whiteboard.</p>
+		<div id="whiteboard">
+			<div class="note">
+				<p>Test Note</p>
+			</div>
+		</div>
+	</body>
+</html>
+

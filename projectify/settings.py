@@ -130,6 +130,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'whiteboard',
     'chat',
     'userprofile',
     
