@@ -2,9 +2,11 @@
 <html>
 	<head>
 		<title>Whiteboard</title>
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.whiteboard.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/plugins/ape.client.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/plugins/jquery.class.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/projectify.whiteboard.js"></script>
 		<script type="text/javascript" src="{{ STATIC_URL }}js/less-1.3.0.min.js"></script>
 		<style type="text/css">
 			#whiteboard {
@@ -85,11 +87,63 @@
 			}
 		</style>
 		<script type="text/javascript">
+			var whiteboardChangeListen = null;
+			var client = new APE.Client();
+
+			function addSticky(data)
+			{
+				data = (typeof data === 'undefined') ? false : data;
+
+				var whiteboard_offset = $("#whiteboard").offset();
+				var random_offset = Math.floor(Math.random()*51);
+				var offset_top = (!data) ? whiteboard_offset.top + random_offset : whiteboard_offset.top + data.position.top;
+				var offset_left = (!data) ? whiteboard_offset.left + random_offset : whiteboard_offset.left + data.position.left;
+				var elementId = (!data) ? String(new Date().getTime()).substr(5) : data.elementId;
+
+				var note_template = $('<div class="note"><p> &nbsp; </p></div>').css(
+					{
+						"left" : offset_left,
+						"top" : offset_top,
+						"position" : "absolute"
+					}
+				).attr('id', elementId).draggable({
+					containment:"parent",
+					drag: function(event, ui) 
+					{
+						var position = {
+							top: ui.position.top - whiteboard_offset.top,
+							left: ui.position.left - whiteboard_offset.left
+						}
+						var uiElement = {
+							create: false,
+							position: position,
+							elementId: $(this).attr('id')
+						}
+						whiteboardChangeListen.getCurrentPipe().send(JSON.stringify(uiElement));
+					} 
+				});
+
+				var position = {
+					left: random_offset,
+					top: random_offset
+				}
+				var uiElement = {
+					create: true,
+					position: position,
+					elementId: elementId
+				}
+				if (!data) whiteboardChangeListen.getCurrentPipe().send(JSON.stringify(uiElement));
+				//console.log(uiElement)
+					console.log("create")
+
+				$("#whiteboard").append(note_template);
+			}
+
 			$(document).ready( function() {
-				var client = new APE.Client(), whiteboardChangeListen = null;
+
 				client.load({
-		            'identifier': 'chatboxListen',
-		            'channel': 'chatboxListen',
+		            'identifier': 'whiteboardChangeListen',
+		            'channel': 'whiteboardChangeListen',
 		            'complete': function(ape)
 		            {
 		                whiteboardChangeListen = new APE.whiteboardChangeListen(ape, {
@@ -97,31 +151,13 @@
 		                });
 		            }
 		        });
+
 				$(".note").draggable({ 
-					containment:"parent", 
-					drag: function(event, ui) 
-					{
-						var uiElement = {
-							position: ui.position,
-							element: this
-						}
-						whiteboardChangeListen.getCurrentPipe().send(JSON.stringify(uiElement));
-					} 
+					containment:"parent"
 				});
 
 				$(".new-sticky").on('click', function() {
-					var whiteboard_offset = $("#whiteboard").offset();
-					var offset_top = whiteboard_offset.top + Math.floor(Math.random()*51)
-					console.log(whiteboard_offset.left);
-					console.log(offset_top);
-					var note_template = $('<div class="note"><p> &nbsp; </p></div>').css(
-						{
-							"left" : whiteboard_offset.left + Math.floor(Math.random()*51),
-							"top" : offset_top,
-							"position" : "absolute"
-						}
-					).draggable({ containment:"parent" });
-					$("#whiteboard").append(note_template);
+					addSticky();
 				});
 
 				$("#whiteboard").dblclick( function(e) {
@@ -167,9 +203,6 @@
 		<button class="new-text">Add Text</button>
 		<p>Just a simple whiteboard.</p>
 		<div id="whiteboard">
-			<div class="note">
-				<p>Test Note</p>
-			</div>
 		</div>
 	</body>
 </html>
