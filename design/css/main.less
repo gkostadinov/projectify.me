@@ -1,5 +1,29 @@
 @import "bootstrap/bootstrap.less";
 
+.icons() {
+	&.sprite-arrow{ background-position: 0 0; width: 15px; height: 20px; } 
+	&.sprite-check{ background-position: -25px 0; width: 19px; height: 20px; } 
+	&.sprite-cloud{ background-position: -54px 0; width: 22px; height: 14px; } 
+	&.sprite-comment{ background-position: -86px 0; width: 23px; height: 18px; } 
+	&.sprite-crop{ background-position: -119px 0; width: 19px; height: 19px; } 
+	&.sprite-darts{ background-position: -148px 0; width: 23px; height: 23px; } 
+	&.sprite-edit{ background-position: -181px 0; width: 22px; height: 21px; } 
+	&.sprite-link{ background-position: -213px 0; width: 18px; height: 21px; } 
+	&.sprite-music{ background-position: -241px 0; width: 19px; height: 23px; } 
+	&.sprite-new{ background-position: -270px 0; width: 17px; height: 19px; } 
+	&.sprite-people{ background-position: -297px 0; width: 18px; height: 19px; } 
+	&.sprite-phone{ background-position: -325px 0; width: 16px; height: 19px; } 
+	&.sprite-search{ background-position: -351px 0; width: 20px; height: 19px; } 
+	&.sprite-star{ background-position: -381px 0; width: 21px; height: 22px; } 
+	&.sprite-text{ background-position: -412px 0; width: 18px; height: 21px; } 
+	&.sprite-trashbin{ background-position: -440px 0; width: 16px; height: 21px; } 
+
+
+	&[class^="sprite-"], &[class*=" sprite-"] {
+		display: inline-block;
+	}
+}
+
 body {
 	background-image: url(../images/bg.png);
 }
@@ -17,7 +41,7 @@ body {
 	}
 }
 
-@max-width: 980px;
+@max-width: 982px;
 
 #topbar {
 	background: url(../images/topbar.png) repeat-x;
@@ -104,4 +128,256 @@ body {
 			}
 		}
 	}
+}
+
+.main-container {
+	width: @max-width;
+	margin: 0 auto;
+	margin-top: 30px;
+
+	.left {
+		float: left;
+
+	}
+
+	.right {
+		float: right;
+	}
+
+
+	&.whiteboard {
+		@whiteboard-min-height: 600px;
+
+		.info {
+			.left {
+				.avatar {
+					img {
+						width: 61px;
+						height: 61px;
+						border: 1px solid #CCCCCC;
+					}
+
+					float: left;
+				}
+
+				.whiteboard-info {
+					margin-left: 16px;
+					font-family: "Myriad Pro", Arial, Helvetica, sans-serif;
+
+					h1 {
+						font-size: 40px;
+						font-weight: 600;
+						color: #333333;
+					}
+					.status {
+						padding-top: 7px;
+						font-size: 13px;
+						color: #757575;
+					}
+
+					float: left;
+				}
+			}
+
+			.right {
+				.button {
+					background: url(../images/button.png) no-repeat;
+					height: 62px;
+
+					ul {
+						list-style: none;
+						margin: 0;
+						margin-left: 25px;
+
+						li {
+							font-family: "Myriad Pro", Arial, Helvetica, sans-serif;
+							color: #fff;
+							font-size: 25px;
+							text-align: center;
+							margin-top: 10px;
+							padding-right: 13px;
+							float: left;
+
+							strong {
+								font-weight: 600;
+							}
+
+							&.separator {
+								width: 1px;
+								height: 36px;
+								background: url(../images/separator-holo.png) repeat-y;
+							}
+						}
+					}
+				}
+			}
+			.clearfix();
+		}
+
+		.main {
+			width: @max-width;
+			margin-top: 52px;
+
+			.whiteboard-top {
+				background: url(../images/whiteboard-top.png) no-repeat;
+				height: 10px;
+			}
+
+			.whiteboard-main {
+				padding: 4px 19px 12px 21px;
+				background: url(../images/whiteboard-main.png) repeat-y;
+
+				.inner {
+					background-color: #fff;
+					border: 1px solid #D5D5D5;
+					min-height: @whiteboard-min-height;
+
+					.border-radius(3px);
+
+					.whiteboard-left {
+						@whiteboard-left-width: 658px;
+						@toolset-width: 41px;
+						@margin: 8px;
+						@whiteboard-container-width: @whiteboard-left-width - @toolset-width - 3*@margin;
+
+						width: @whiteboard-left-width;
+						min-height: @whiteboard-min-height;
+
+						.toolset {
+							margin: @margin 0 @margin @margin;
+							width: @toolset-width;
+
+							.toolset-top {
+								background: url(../images/toolset-top.png) no-repeat;
+								height: 12px;
+							}
+							.toolset-main {							
+								background: url(../images/toolset-main.png) repeat-y;
+
+								ul {
+									list-style: none;
+									margin: 0;
+
+									li {
+										padding-top: 4px;
+										padding-bottom: 4px;
+										padding-left: 1px;
+										height: 28px;
+
+										&.active, &:hover {
+											div {
+												background: url(../images/toolset-active-li.png) no-repeat;
+
+												i {
+													background: url("../images/icons-white.png") no-repeat top left;
+													.icons();
+												}
+											}
+										}
+
+										&.disabled {
+											opacity: 0.5;
+
+											&:hover {
+												div {
+													background: transparent;
+													cursor: default;
+
+													i {
+														background: url("../images/icons.png") no-repeat top left;
+														.icons();
+													}
+												}
+											}
+										}
+
+										&.separator {
+											margin-left: 1px;
+											width: 38px;
+											background: url(../images/separator-holo-white.png) repeat-x;
+											height: 1px;
+										}
+
+										div {
+											width: 30px;
+											height: 30px;
+											margin-left: 4px;
+											cursor: pointer;
+
+											i {
+												margin: 6px;
+												background: url("../images/icons.png") no-repeat top left;
+												.icons();
+											}
+										}
+									}
+								}
+							}
+							.toolset-bottom {
+								background: url(../images/toolset-bottom.png) no-repeat;
+								height: 5px;
+							}
+						}
+
+						.whiteboard-container {
+							width: @whiteboard-container-width;
+							margin:  @margin;
+
+							.quick-tools {
+								height: 30px;
+								margin-bottom: @margin;
+
+								.tools {
+									width: 200px;
+									height: 100%;
+									background-color: #F3F3F3;
+									border: 1px solid #E1E1E1;
+									.border-radius(3px);
+									.box-shadow(~"inset -1px -1px 1px #E1E1E1");
+								}
+							}
+
+							.whiteboard-element {
+								min-height: @whiteboard-min-height - 30 - 3*@margin;
+							}
+						}
+					}
+
+					.whiteboard-separator {
+						background: url(../images/whiteboard-separator.png) repeat-y;
+						width: 12px;
+						min-height: @whiteboard-min-height;
+
+						.lines {
+							@lines-height: 27px;
+							background: url(../images/whiteboard-separator-lines.png) no-repeat;
+							cursor: move;
+							height: 27px;
+							margin-top: @whiteboard-min-height/2 - @lines-height/2;
+						}
+					}
+
+					.whiteboard-right {
+						background-color: #F3F3F3;
+						width: 270px;
+						min-height: @whiteboard-min-height;
+						.box-shadow(~"inset 1px 1px 1px #fff");
+					}
+				}
+			}
+
+			.whiteboard-bottom {
+				background: url(../images/whiteboard-bottom.png) no-repeat;
+				height: 12px;
+			}
+		}
+	}
+}
+
+#footer {
+	width: @max-width;
+	margin: 0 auto;
+	margin-top: 40px;
+	margin-bottom: 10px;
+	text-align: center;
 }
